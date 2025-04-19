@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tools Tracker</title>
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- AOS Library for animations -->
+    <link href="https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.rawgit.com/michalsnik/aos/2.1.1/dist/aos.js"></script>
+    <style>
+        /* Custom styles to match modern look */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background: linear-gradient(to right, #b80b0b, #ecedf0);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            list-style: none;
+        }
+
+        .nav-item {
+            margin: 0 20px;
+        }
+
+        .nav-link {
+            color: #fff;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+        }
+
+        section {
+            padding: 50px 0;
+        }
+
+        .headline {
+            font-size: 3rem;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sub-headline {
+            font-size: 1.5rem;
+            color: #777;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .tools-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .tools-table th, .tools-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tools-table th {
+            background-color: #f7f5fa;
+            color: rgb(8, 7, 7);
+        }
+
+        .tools-table td {
+            background-color: #6097ce;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 300px;
+            border: 2px solid #d44040;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #6a11cb;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        /* Style for current time */
+        #current-time {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #fefffe;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>iinkumbuzo</h1>
+        <p>Mark important tools for various events and photo shoots.</p>
+    </header>
+
+    <main>
+        <section id="event-selection">
+            <div class="container">
+                <h2 class="headline"></h2>
+                <select id="event-list" class="btn" onchange="loadEventDetails()">
+                    <option value="">Select Event</option>
+                    <option value="Podcasts">Podcasts</option>
+                    <option value="Event Photoshoots">Event Photoshoots</option>
+                    <option value="Home Indoor Photoshoots">Home Indoor Photoshoots</option>
+                    <option value="Outdoor Events">Outdoor Events</option>
+                    <option value="Masterclasses">Masterclasses</option>
+                    <option value="Family Gatherings">Family Gatherings</option>
+                    <option value="Family Gatherings">Beauty salon</option>
+
+                </select>
+            </div>
+        </section>
+
+        <section id="tools-list">
+            <div class="container">
+                <h2 class="headline"></h2>
+                <div id="current-time"></div> <!-- Current Date and Time Display -->
+
+                <table class="tools-table">
+                    <thead>
+                        <tr>
+                            <th>Tool Name</th>
+                            <th>Present?</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tools-table-body">
+                        <!-- Tools will be dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="pin-entry">
+            <div class="container">
+                <h2 class="headline"></h2>
+                <input type="text" id="pin-input" placeholder="Enter Tool PIN" />
+                <button onclick="checkPin()">Submit PIN</button>
+                <p id="pin-result">Enter a PIN to mark a tool as present.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 iinkumbuzo Photography. All rights reserved.</p>
+    </footer>
+
+    <script src="brain.js"></script>
+    <script>
+        AOS.init();
+
+        // Function to display current South African date and time
+        function updateDateTime() {
+            const now = new Date();
+            // Convert the date to South African Time (UTC +2)
+            const options = {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Africa/Johannesburg'
+            };
+            const saDateTime = now.toLocaleString('en-ZA', options);
+            document.getElementById("current-time").textContent = ` ${saDateTime}`;
+        }
+
+        // Update the time every second
+        setInterval(updateDateTime, 1000); // Updates every second
+    </script>
+
+</body>
+</html>
